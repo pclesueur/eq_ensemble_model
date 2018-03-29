@@ -6,6 +6,7 @@ Created on Tue Mar 27 21:51:57 2018
 
 import unittest
 import vdc_impacts as ip
+import inputs as inpt
 import pandas as pd
 
 class TestVDCImpacts(unittest.TestCase):
@@ -27,18 +28,25 @@ class TestVDCImpacts(unittest.TestCase):
         self.assertEqual(res, 0)
     
     def test_buildingRate(self):
-        vdc_data = ip.getVdcData('Atarpur')
-        res = ip.buildingRate('wdn',vdc_data)
+        s = pd.Series(data = [2182, 1, 1, 3, 6, 453, 0], 
+                      index=['pop', 'wdn', 'rcne', 'bcf', 'bcr', 'sm', 'bm'])
+        res = ip.buildingRate('wdn',s)
         self.assertAlmostEqual(res, 0.0021551724137931)
-        res = ip.buildingRate('sm',vdc_data)
+        res = ip.buildingRate('sm',s)
         self.assertAlmostEqual(res, 0.976293103448276)
     
     def test_buildingPop(self):
-        vdc_data = ip.getVdcData('Atarpur')
-        res = ip.buildingPop(vdc_data, 'wdn')
+        s = pd.Series(data = [2182, 1, 1, 3, 6, 453, 0], 
+                      index=['pop', 'wdn', 'rcne', 'bcf', 'bcr', 'sm', 'bm'])
+        res = ip.buildingPop(s, 'wdn')
         self.assertAlmostEqual(res, 4.70258620689655)
-        
-        
+    
+    def test_vdcImpacts(self):
+        s = pd.Series(data = [2182, 1, 1, 3, 6, 453, 0], 
+                      index=['pop', 'wdn', 'rcne', 'bcf', 'bcr', 'sm', 'bm'])
+        res= ip.vdc_impacts(s, 0.3)
+        self.assertEquals(len(res), len(inpt.injury_state))
+        self.assertTrue(type(res) == type(s))
         
 if __name__ == '__main__':
     unittest.main()

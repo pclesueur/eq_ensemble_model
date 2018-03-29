@@ -117,12 +117,11 @@ def buildingPop(vdc_data, building_type):
 #==============================================================================
 '''
 calculate impacts in a vdc for a given eq scenerio
-input:  vdc [string], shaking [float]
+input:  vdc_data [Series], shaking [float]
 output: Series of (injury_state, number of people impacted)
 
 '''
-def vdc_impacts(vdc, shaking):
-    vdc_data = getVdcData(vdc)
+def vdc_impacts(vdc_data, shaking):
     result = pd.Series(data = [0,0,0], index = inpt.injury_state) 
     
     for building_type in building_types:

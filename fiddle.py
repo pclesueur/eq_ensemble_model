@@ -10,13 +10,16 @@ import inputs as inpt
 import vdc_impacts as impacts
 import math as math
 
-
-result = impacts.vdc_impacts('Atarpur', 5)
+vdc_data = impacts.getVdcData('Atarpur')
+result = impacts.vdc_impacts(vdc_data, 5)
 #test = impacts.humanImpacts('wdn', 'collapse', )
 
 print(result)
 
-#s = pd.Series(data = [0.64,0.95], index=['sigma','x50']) 
+s = pd.Series(data = [0.64,0.95], index=['sigma','x50']) 
+
+print(type(s))
+
 #print(s)
 
 '''
