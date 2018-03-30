@@ -1,66 +1,67 @@
-# -*- coding: utf-8 -*-
 """
-Spyder Editor
+Main class to compute ensemble model, given a series of eqs.
+V1.0
+Prepared by: Philip LeSueur
+Date: March 30, 2018
 
-This is a temporary script file.
 """
-
-"""
-Given an earthquake and exposure condition
-
-import inputs
-    **this needs to store all the look up tables, and needs 
-    to be stored with result.
-
-def vdc_impacts....
-    inputs = getVdcData(vdc);
-
-    result = [fatalities, injury1, injury2]
-
-    For building_type in building_types
-        Calculate % complete damage, % collapse, etc.
-            a function
-        Calculate population, given VDC, building type
-            a function that defines how this is calculated
+  
+'''
+have one more external python file that get's the inputs and runs the EnsembleModel Class.
+     
+Class EnsembleModel
+    initialize
+    get all the data
+    'comment that defines model iteration'
     
-        For damage_type in damage_types
-            Calculate number of people in damage_type & building_type, (could also be percent of pop)
-                pop_per_building * % damaged    
-            Calculate injury_types (fatalities, injuries)
-                a function, takes building_type, damage_type, population_rate in damaged building type;
-            returns array
-            update results array                
-       End For
-    End For
-
-    return result 
- 
-       
-def quake_impacts....
-    
-    result = [data table of vdc]
-    For vdc in vdcs
-        vdc_impacts = vdc_impacts(vdc)    
-        add impacts to results table
-    End For
-    
-    summarizeAndStore(result)
-        function to finalize all data stuff
+    def eqImpacts()
+        result = dataframe of vdc x impact state
         
-def summarizeAndStore
-
-    take the big table and get key metrics
-        function to summarize(result)
-    add results, key metrics, and inputs to database.
-
-def nepal_quakes()
-
-    get all input data going
-
-    For quake in quakes
-        quake_impacts(quake,...)
-    End For
-
-nepal_quakes();
+        for vdc in vdc
+        result = {}, series for each impact_state
+        
+            for exposure_condition in exposure_conditions
+                make cur_vdc_scenerio
+                compute impacts
+                update results table ()
+            
+            update results table, dataframe of vdc x impact_state
     
-"""
+    def exportData()
+        export current 3d frame into master csv's, which are (eq x vdc) organized by impact type
+        calculate summary values, export summary to 3 master csv's.
+    
+    def ensembleModel()
+        result = 3d data [eq, vdc, impact_state]
+        for eq in eqs
+            eqImpacts(shaking)
+            update results table
+    
+        export_data
+'''
+
+
+#Getters
+#==============================================================================
+'''
+Input:  VDC [string]
+Output: Series of VDC data 
+'''
+def getVdcData(vdc):
+    return inpt.vdc_data.loc[vdc] 
+
+'''
+Input:  building_type [string]
+Output: Dataframe of std, x50 for damage states
+'''
+def getFragilityCurves(building_type):
+    return inpt.fragility_curves.loc[building_type]
+
+
+'''
+Input:  building_type [string], damage_state [string]
+Output: Series of impact_rates 
+'''
+def getImpactRates(building_type, damage_state):
+    return inpt.impact_rates[building_type][damage_state]
+

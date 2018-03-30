@@ -10,6 +10,40 @@ import inputs as inpt
 import vdc_impacts as impacts
 import math as math
 
+
+
+
+#vdc_impacts = pd.Series(index = ['a', 'b', 'c']) 
+#vdc_impacts['a'] = 1
+#print(vdc_impacts)
+'''
+class Human:
+    def __init__(self, height, weight):
+        self.height = height
+        self.weight = weight
+    
+    skills = []
+    
+    def bmi(self):
+        return self.height / self.weight
+    
+    def addSkill(self, skill):
+        self.skills.append(skill)
+        
+    def __mostPrivate(self):
+        print('this is private ill kill you')
+
+phil = Human(6, 155)
+phil_bmi = phil.bmi()
+phil.addSkill('coding')
+phil.addSkill('hazard assessment')
+print(phil_bmi)
+print(phil.skills)
+'''
+
+
+
+'''
 vdc_data = impacts.getVdcData('Atarpur')
 result = impacts.vdc_impacts(vdc_data, 5)
 #test = impacts.humanImpacts('wdn', 'collapse', )
@@ -21,6 +55,8 @@ s = pd.Series(data = [0.64,0.95], index=['sigma','x50'])
 print(type(s))
 
 #print(s)
+'''
+
 
 '''
 test = impacts.getFragilityCurves('wdn')

@@ -66,4 +66,3 @@ frames = {}
 for i in range(0, len(data)):
     frames[building_types[i]] = pd.DataFrame(data=data[i], index=rows, columns=cols)
 impact_rates = pd.Panel(frames)
-
