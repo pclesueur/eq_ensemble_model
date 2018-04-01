@@ -17,12 +17,12 @@ Class EnsembleModel
     def eqImpacts()
         result = dataframe of vdc x impact state
         
-        for vdc in vdc
+        for vdc in vdcs
         result = {}, series for each impact_state
         
-            for exposure_condition in exposure_conditions
-                make cur_vdc_scenerio
-                compute impacts
+            for exposure in exposures
+                cur_vdc = impacts.VDCImpacts(vdc, shaking, exposure)
+                impacts = cur_vdc.computeImpacts()
                 update results table ()
             
             update results table, dataframe of vdc x impact_state

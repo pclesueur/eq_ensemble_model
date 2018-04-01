@@ -1,12 +1,13 @@
 """
-Main class to estimate the human impacts in a VDC given a eq scenerio
+Main class to estimate the human impacts in a VDC given an eq scenerio
 V1.0
 Prepared by: Philip LeSueur
-Date: March 26, 2018
+Date: April 1, 2018
 
 """
 import pandas as pd
 import math as math
+import inputs as inpt
 
 # Main Class
 #==============================================================================
@@ -14,29 +15,23 @@ class VDCImpacts:
     '''
     vdc_data [Series] - input vdc_data  
     shaking [float] - magnitude of ground shaking in the scenerio
-    fragility_curves [Panel] - (building_types, curve_params, damage_state);
-    impact_rates [Series] - impact rates for injury_states and fatalities
+    exposure [string] - exposure condition for the scenerio
+    occup_rates [DataFrame] - exposure rates for rural/urban. Unless specified, taken from inputs.py
+    fragility_curves [MultiIndex] - (building_types, curve_params, damage_state). Unless specified, taken from inputs.py
+    impact_rates [MultiIndex] - impact rates for injury_states and fatalities. Unless specified, taken from inputs.py
     '''
-    def __init__(self, vdc_data, shaking, fragility_curves, impact_rates):
+    def __init__(self, vdc_data, shaking, exposure, 
+                 occup_rates=inpt.occup_rates, fragility_curves=inpt.fragility_curves, impact_rates=inpt.impact_rates):
         self.data = vdc_data
         self.shaking = shaking
+        self.exp = exposure
+        self.occup_rates = occup_rates
         self.frag_curves = fragility_curves
         self.impct_rates = impact_rates
         self.bldng_types = fragility_curves.axes[0]
         self.injury_states = impact_rates.axes[1]
         self.dmg_states = fragility_curves.axes[2] 
-        #TODO: add exposure condition to make a complete scenerio
-        #TODO: change from Panel to new thing
-        
-    
-    def buildingRate(self, building_type, vdc_data):
-        '''
-        calculate building rate
-        Input:  building_type [string], vdc_data [Series]
-        Output: building rate [float]
-        '''
-        return vdc_data.loc[building_type] / sum(vdc_data.loc[self.bldng_types])
-
+        #TODO: change from Panel to MultiIndex
 
     def buildingImpacts(self, building_rate, building_type, shaking):
         '''
@@ -60,6 +55,15 @@ class VDCImpacts:
         return building_rate * self.probabilityOfDamage(shaking, curve)
         
     
+    def buildingRate(self, building_type, vdc_data):
+        '''
+        calculate building rate
+        Input:  building_type [string], vdc_data [Series]
+        Output: building rate [float]
+        '''
+        return vdc_data.loc[building_type] / sum(vdc_data.loc[self.bldng_types])
+    
+    
     def probabilityOfDamage(self, shaking, curve): 
         '''
         calculate probability of damage. Returns zero if given non-number.
@@ -76,7 +80,7 @@ class VDCImpacts:
 
     def humanImpacts(self, building_type, damage_state, buildings_impacted):       
         '''
-        calculate proportion of population in building_type impacted for each injury_type
+        calculate proportion of population that would be impacted for building_type and injury_state
         Input:  building_type [string], damage_state [string], buildings_impacted [float]
         Output: Series of (injury_state, impact_probability)
         '''
@@ -85,24 +89,13 @@ class VDCImpacts:
         for injury_state, impact_rate  in impact_rates.iteritems():
             result[injury_state] = buildings_impacted * impact_rate    
         return result
-    
-    
-    def buildingPop(self, vdc_data):
-        '''
-        calcuate the number of people in each building type
-        Input:  vdc_data [Series]
-        Output: people in given building type [int]
-        '''   
-        return vdc_data.loc['pop'] / sum(vdc_data.loc[self.bldng_types])
-        #TODO: factor this out so buildingPop is in vdc_data
-    
 
     def computeImpacts(self):
         '''
         calculate impacts in a vdc for a given eq scenerio
         output: Series of (injury_state, number of people impacted)    
         '''
-        result = pd.Series(index = self.injury_states) 
+        result = pd.Series(data = [0] * len(self.injury_states), index = self.injury_states) 
         
         for building_type in self.bldng_types:
             building_rate = self.buildingRate(building_type, self.data)
@@ -112,6 +105,8 @@ class VDCImpacts:
                 human_impacts = self.humanImpacts(building_type, damage_state, buildings_impacted)
                 
                 for injury_state, impact_probability in human_impacts.iteritems():
-                    result.loc[injury_state] += (impact_probability * self.buildingPop(self.data))
+                    result.loc[injury_state] += int(impact_probability *
+                                                    self.data.loc[building_type + '_pop'] *
+                                                    self.occup_rates.loc[self.exp][self.data.loc['class']])
                   
         return result 

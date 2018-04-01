@@ -10,17 +10,37 @@ import inputs as inpt
 import vdc_impacts as impacts
 import math as math
 
+building_types =    ["wdn", "rcne", "bcf", "bcr", "bm", "sm"] 
+
+vdc_data = pd.Series(data = ['Aratapur', 'rural', 2182, 
+                             10, 10, 20, 30, 50, 50,
+                             50, 50, 100, 1500, 2500, 250], 
+                         index = ['vdc', 'class', 'pop', 
+                                  'wdn', 'rcne', 'bcf', 'bcr', 'bm', 'sm',
+                                  'wdn_pop','rcne_pop','bcf_pop','bcr_pop','bm_pop', 'sm_pop'])
+
+cur_vdc = impacts.VDCImpacts(vdc_data, 0.3, 'night')
+impacts = cur_vdc.computeImpacts()
+print(impacts)
+
+'''
+index = ['a', 'b', 'c']
+
+vdc_impacts = pd.Series(data = [0] * len(index), index = ['a', 'b', 'c'], dtype = float) 
+
+for ind, val in vdc_impacts.iteritems():
+    vdc_impacts.loc[ind] = vdc_impacts.loc[ind] + 3.0
+
+print(vdc_impacts)
+'''
 
 
-
-#vdc_impacts = pd.Series(index = ['a', 'b', 'c']) 
-#vdc_impacts['a'] = 1
-#print(vdc_impacts)
 '''
 class Human:
-    def __init__(self, height, weight):
+    def __init__(self, height, weight, race = 'white'):
         self.height = height
         self.weight = weight
+        self.race = race
     
     skills = []
     
@@ -32,15 +52,19 @@ class Human:
         
     def __mostPrivate(self):
         print('this is private ill kill you')
+        
+    def getRace(self):
+        return self.race
 
 phil = Human(6, 155)
-phil_bmi = phil.bmi()
-phil.addSkill('coding')
-phil.addSkill('hazard assessment')
-print(phil_bmi)
-print(phil.skills)
+#phil_bmi = phil.bmi()
+#phil.addSkill('coding')
+#phil.addSkill('hazard assessment')
+#print(phil_bmi)
+#print(phil.skills)
+race = phil.getRace()
+print(race)
 '''
-
 
 
 '''

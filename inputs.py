@@ -17,6 +17,16 @@ damage_state =      ['moderate', 'extensive', 'complete', 'collapsed']
 vdc_data = pd.read_csv('inputs/vdc_data.csv', index_col = 0)
 
 
+#Occupancy Rates
+#=============================================================================
+rows = ['night', 'workday', 'non-workday']
+cols = ['urban', 'rural']
+data = [[0.99, 0.99],
+        [0.70, 0.40],
+        [0.40, 0.70]]
+occup_rates = pd.DataFrame(data=data, index=rows, columns=cols)
+
+
 #Fragility Curves
 #=============================================================================
 rows = ['sigma', 'x50']
@@ -35,6 +45,7 @@ frames = {}
 for i in range(0, len(data)):
     frames[building_types[i]] = pd.DataFrame(data=data[i], index=rows, columns=cols)
 fragility_curves = pd.Panel(frames)
+fragility_curves.to_frame()
 
 #Human Impact Rates
 #=============================================================================
@@ -66,3 +77,4 @@ frames = {}
 for i in range(0, len(data)):
     frames[building_types[i]] = pd.DataFrame(data=data[i], index=rows, columns=cols)
 impact_rates = pd.Panel(frames)
+impact_rates.to_frame()
